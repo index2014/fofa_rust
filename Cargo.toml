@@ -1,4 +1,3 @@
-workspace = { members = ["examples/get_single_page"] }
 [package]
 name = "fofa"
 version = "0.1.5"
