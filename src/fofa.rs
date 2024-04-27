@@ -39,11 +39,11 @@ pub struct FofaClient {     //发送给fofa的request
     pub query_string: String,
     pub size: u32,
     pub outfile: bool,
-    workbook: xlsxwriter::Workbook,
-    json: String,
+    pub workbook: xlsxwriter::Workbook,
+    pub json: String,
 }
 impl FofaClient{
-    async fn search(&self, page: u16) -> Result<FofaApiSearch, reqwest::Error> {
+    pub async fn search(&self, page: u16) -> Result<FofaApiSearch, reqwest::Error> {
         let mut base64_encoded = String::new();
         general_purpose::STANDARD.encode_string(self.query_string.clone(), &mut base64_encoded);
         let url = format!(
@@ -57,43 +57,43 @@ impl FofaClient{
         }
         Ok(fofaresponse)
     }
-    fn get_consumed_fpoint(&self, raw_response:FofaApiSearch) -> u16 {
+    pub fn get_consumed_fpoint(&self, raw_response:FofaApiSearch) -> u16 {
         if cfg!(debug_assertions){
             println!("剩余fpoint获取成功");
         }
         raw_response.consumed_fpoint.clone()
     }
-    fn get_required_fpoints(&self, raw_response:FofaApiSearch) -> u16 {
+    pub fn get_required_fpoints(&self, raw_response:FofaApiSearch) -> u16 {
         if cfg!(debug_assertions){
             println!("需要fpoint获取成功");
         }
         raw_response.required_fpoints.clone()
     }
-    fn get_size(&self, raw_response:FofaApiSearch) -> u32 {
+    pub fn get_size(&self, raw_response:FofaApiSearch) -> u32 {
         if cfg!(debug_assertions){
             println!("Total数据量获取成功");
         }
         raw_response.size.clone()
     }
-    fn get_mode(&self, raw_response:FofaApiSearch) -> String {
+    pub fn get_mode(&self, raw_response:FofaApiSearch) -> String {
         if cfg!(debug_assertions){
             println!("接口模式获取成功");
         }
         raw_response.mode.clone()
     }
-    fn get_query(&self, raw_response:FofaApiSearch) -> String {
+    pub fn get_query(&self, raw_response:FofaApiSearch) -> String {
         if cfg!(debug_assertions){
             println!("Querry String获取成功");
         }
         raw_response.query.clone()
     }
-    fn get_results(&self, raw_response:FofaApiSearch) -> Vec<Vec<String>> {
+    pub fn get_results(&self, raw_response:FofaApiSearch) -> Vec<Vec<String>> {
         if cfg!(debug_assertions){
             println!("成功获取到Vec<Vec<String>>");
         }
         raw_response.results.clone()
     }
-    fn get_lines(&self, raw_response:FofaApiSearch, start: usize, end: usize) -> Vec<Vec<String>> {
+    pub fn get_lines(&self, raw_response:FofaApiSearch, start: usize, end: usize) -> Vec<Vec<String>> {
         let results = raw_response.results.clone();
         let selected_lines = results[start..end].to_vec();
         if cfg!(debug_assertions){
@@ -101,7 +101,7 @@ impl FofaClient{
         }
         selected_lines
     }
-    fn get_selected_fields(&self, selected_fields: String, raw_response:FofaApiSearch) -> Vec<String> {
+    pub fn get_selected_fields(&self, selected_fields: String, raw_response:FofaApiSearch) -> Vec<String> {
         let fields: Vec<&str> = self.fields.split(',').collect();
         let mut selected_values = Vec::new();
         for result in raw_response.results {
@@ -120,7 +120,7 @@ impl FofaClient{
         }
         selected_values
     }
-    async fn get_selected_pages(&self, start: u16, end: u16) -> Result<Vec<Vec<String>>, reqwest::Error> {
+    pub async fn get_selected_pages(&self, start: u16, end: u16) -> Result<Vec<Vec<String>>, reqwest::Error> {
         let mut all_responses = Vec::new();
         for i in start..=end {
             let raw_response = self.search(i).await?;
@@ -132,7 +132,7 @@ impl FofaClient{
         }
         Ok(all_responses)
     }
-    fn write_data_to_excel(&mut self, pages :u16, raw_response:FofaApiSearch) -> Result<(), XlsxError> {
+    pub fn write_data_to_excel(&mut self, pages :u16, raw_response:FofaApiSearch) -> Result<(), XlsxError> {
         let data = raw_response.results.clone();
         let rows = self.size * pages as u32;
         let cols = self.fields.split(',').count() as u32;
@@ -163,13 +163,13 @@ impl FofaClient{
         }
         Ok(())
     }
-    fn write_data_to_json(&self, raw_response:FofaApiSearch){
+    piub fn write_data_to_json(&self, raw_response:FofaApiSearch){
         let data = raw_response.results.clone();
         let json = json!(data);
         let json_string = serde_json::to_string(&json).unwrap();
         std::fs::write(&self.json, json_string).expect("Failed to write JSON file");
     }
-    fn gettime() -> u64 {                               //写到文件名里的时间戳
+    pub fn gettime() -> u64 {                               //写到文件名里的时间戳
         let now = SystemTime::now();
         let duration = now.duration_since(UNIX_EPOCH).expect("SystemTime before UNIX EPOCH!");
         let timestamp = duration.as_secs();
