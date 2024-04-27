@@ -4,9 +4,9 @@ An simple wrapper fo for [FOFA API]("https://fofa.info/api") rewrite in rust. wr
 FOFA is a search engine for Internet-connected devices. `FOFA API` helps developers integrate FOFA data easily in their own projects.
 
 # Documentaion
-[中文版本](docs/README_CN.MD)
+[中文版本](docs/README_CN.md)
 
-[Documentaion](docs/README_EN.MD)
+[Documentaion](docs/README_EN.md)
 
 # Usage
 ``` bash
