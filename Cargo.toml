@@ -1,6 +1,7 @@
+workspace = { members = ["examples/get_single_page"] }
 [package]
 name = "fofa"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 authors = ["algooriithm <tengxunniubi@protonmail.com>"]
 description = "fofa_rust is a sdk made for FOFA (a cybersecurity map tool)"
